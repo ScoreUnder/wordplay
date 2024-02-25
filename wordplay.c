@@ -36,7 +36,7 @@ char   *uppercase (char *s);
 char   *alphabetic (char *s);
 int     numvowels (char *s);
 void    anagramr7 (char *s, char **accum, int *minkey, int *level);
-char   *extract (char *s1, char *s2);
+void    extract (char *dest, char *s1, char *s2);
 int     intmask (char *s);
 
 char  **words2;  /* Candidate word index (pointers to the words) */
@@ -308,7 +308,7 @@ int main (int argc, char *argv[])
   if (specfirstword)
   {
     strcpy (u_first_word, uppercase(first_word));
-    strcpy (remaininitword, extract (initword, u_first_word));
+    extract (remaininitword, initword, u_first_word);
     if (remaininitword[0] == '0')
     {
       fprintf (stderr, "Specified first word \"%s\" cannot be extracted "
@@ -389,7 +389,7 @@ int main (int argc, char *argv[])
     if (hasnumber == 1) continue;
 
     strcpy (ubuffer, uppercase (alphbuffer));
-    strcpy (leftover, extract (initword, ubuffer));
+    extract (leftover, initword, ubuffer);
     if (leftover[0] == '0') continue;
 
     strcpy (w2memptr, uppercase(buffer));
@@ -897,7 +897,7 @@ void anagramr7 (char *s, char **accum, int *minkey, int *level)
 
 /*  Extract a word from the string being anagrammed.  */
 
-    strcpy (exts, extract (s, wordss[i]));
+    extract (exts, s, wordss[i]);
 
 /*  If the extraction was not possible, we are at a "dead end"  */
 
@@ -949,7 +949,7 @@ void anagramr7 (char *s, char **accum, int *minkey, int *level)
   return;
 }
 
-char *extract (char *s1, char *s2)
+void extract (char *dest, char *s1, char *s2)
 {
 
 /*  Returns the characters remaining in s1 after extracting the characters
@@ -958,18 +958,17 @@ char *extract (char *s1, char *s2)
     no characters remain in s1 after the extraction, then the null string ""
     is returned.
 
-    Examples:  extract ("STOP", "SO")  returns "TP"
-               extract ("AAA", "A") returns "AA"
-               extract ("BCA", "ABC") returns ""
-               extract ("ABCDE", "ABF") returns "0"  ('zero', not 'oh')
+    Examples:  extract (dest, "STOP", "SO")  returns "TP" in dest
+               extract (dest, "AAA", "A") returns "AA" in dest
+               extract (dest, "BCA", "ABC") returns "" in dest
+               extract (dest, "ABCDE", "ABF") returns "0" in dest  ('zero', not 'oh')
 */
 
-  static char r1[MAX_WORD_LENGTH];
   char t1[MAX_WORD_LENGTH];
   char *s1p, *s2p, *r1p, *s1end, *s2end;
   int found, s1len, s2len;
 
-  r1p = r1;
+  r1p = dest;
 
   strcpy (t1, s1);
   s1p = t1;
@@ -994,18 +993,16 @@ char *extract (char *s1, char *s2)
     }
     if (found == 0)
     {
-      *r1 = '0';
-      *(r1 + 1) = '\0';
-      return (r1);
+      *dest = '0';
+      *(dest + 1) = '\0';
+      return;
     }
   }
 
-  r1p = r1;
+  r1p = dest;
   for (s1p = t1; s1p < s1end; s1p++)
     if (*s1p != '0') *(r1p++) = *s1p;
   *r1p = '\0';
-
-  return (r1);
 }
 
 int intmask (char *s)
