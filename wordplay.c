@@ -964,25 +964,15 @@ void extract (char *dest, char *s1, char *s2)
                extract (dest, "ABCDE", "ABF") returns "0" in dest  ('zero', not 'oh')
 */
 
-  char t1[MAX_WORD_LENGTH];
-  char *s1p, *s2p, *r1p, *s1end, *s2end;
-  int found, s1len, s2len;
+  char *s1p, *s2p, *r1p;
+  int found;
 
-  r1p = dest;
+  strcpy (dest, s1);
 
-  strcpy (t1, s1);
-  s1p = t1;
-  s1len = (int) strlen (s1p);
-  s1end = s1p + s1len;
-
-  s2p = s2;
-  s2len = (int) strlen (s2);
-  s2end = s2p + s2len;
-
-  for (s2p = s2; s2p < s2end; s2p++)
+  for (s2p = s2; *s2p != '\0'; s2p++)
   {
     found = 0;
-    for (s1p = t1; s1p < s1end; s1p++)
+    for (s1p = dest; *s1p != '\0'; s1p++)
     {
       if (*s2p == *s1p)
       {
@@ -999,10 +989,17 @@ void extract (char *dest, char *s1, char *s2)
     }
   }
 
+  // Remove the '0's from the destination string
   r1p = dest;
-  for (s1p = t1; s1p < s1end; s1p++)
-    if (*s1p != '0') *(r1p++) = *s1p;
-  *r1p = '\0';
+  while (*r1p != '0') r1p++;
+  s1p = r1p;
+
+  do
+  {
+    while (*s1p == '0') s1p++;
+    *r1p++ = *s1p;
+  }
+  while (*s1p++ != '\0');
 }
 
 int intmask (char *s)
