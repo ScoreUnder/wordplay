@@ -430,8 +430,7 @@ int main (int argc, char *argv[])
   j = 1;
   for (i = 0; i < w2size; i++)
     if (j < ncount)
-      if ( (words2mem[i] == '\0') &&
-         ( (strlen(words2mem + i + 1)) == strlen(alphabetic(words2mem + i + 1)) ) )
+      if (words2mem[i] == '\0')
      {
         words2[j++] = words2mem + i + 1;
      }
